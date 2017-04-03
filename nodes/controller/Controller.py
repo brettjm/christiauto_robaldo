@@ -36,9 +36,9 @@ def init():
 
     
     # Proportional gains
-    kpx  =  0.835
-    kpy  =  0.835
-    kpth = -0.035
+    kpx  = 0.835
+    kpy  = 0.835
+    kpth = 0.035
     # kpth = 0.015
 
     # Derivative gains
@@ -47,8 +47,8 @@ def init():
     kdth = 5.4
 
     # Instantiate x, y, and th PD controller
-    P_x     = P(kpx,  kdx, 0.6, 0.05)
-    P_y     = P(kpy,  kdy, 0.6, 0.05)
+    P_x     = P(kpx,  kdx, 0.7, 0.05)
+    P_y     = P(kpy,  kdy, 0.7, 0.05)
     P_theta = P(kpth, kdth, 360, 0.05)
 
 
@@ -79,7 +79,7 @@ def update(time_since_last_update, xhat, yhat, thetahat):
     global velocities, _arrived, _loop_count
 
     if _arrived:
-        print "Quiting on _arrived."
+        # print "Quiting on _arrived."
         # Don't even try
         return (0, 0, 0)
 

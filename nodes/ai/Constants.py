@@ -4,7 +4,7 @@ field_width         = 2.38 # (93.875 in) ## Old field was 2.62 # (8.58 ft)
 fourth_field_length = field_length/4
 half_field          = 0
 
-robot_width         = 0.175 # (7.0 in)
+robot_width         = 0.196 # (7.0 in)
 robot_half_width    = robot_width/2
 # add constant that is the front of the robot, where we actually kick.
 
