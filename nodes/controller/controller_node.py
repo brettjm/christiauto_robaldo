@@ -107,7 +107,7 @@ def main():
             CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
 
             # debug
-            print("rps: %.2f, %.2f, %.2f" % (rps1, rps2, rps3))            
+            # print("rps: %.2f, %.2f, %.2f" % (rps1, rps2, rps3))            
             
          rate.sleep()
         

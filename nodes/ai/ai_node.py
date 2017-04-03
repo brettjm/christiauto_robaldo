@@ -5,7 +5,7 @@ import rospy
 from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Bool
 
-from christiauto_robaldo.msg import BallState, RobotState
+#from christiauto_robaldo.msg import BallState, RobotState
 from soccerref.msg import GameState
 
 import numpy as np
@@ -72,8 +72,8 @@ def main():
 
     # are we home or away?
     global _team_side
-    #param_name = rospy.search_param('team_side')
-    _team_side = 'away' #rospy.get_param(param_name, 'home')
+    # param_name = rospy.search_param('team_side')
+    _team_side = sys.argv[1] #rospy.get_param(param_name, 'home')
 
     # Create robot objects that store that current robot's state
     _create_robots()

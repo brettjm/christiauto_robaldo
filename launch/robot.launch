@@ -15,7 +15,7 @@
       <node name="controller" pkg="christiauto_robaldo" type="controller_node.py" output="screen">
       </node>
 
-      <node name="ai" pkg="christiauto_robaldo" type="ai_node.py" output="screen">
+      <node name="ai" pkg="christiauto_robaldo" type="ai_node.py" args="$(arg team_side)" output="screen">
          <remap from="game_state" to="/game_state" />
       </node>
 
