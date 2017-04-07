@@ -60,7 +60,8 @@ def _create_robots():
     global  _me, _ally, _opp1, _opp2
     am_i_ally1 = 'ally1' in rospy.get_namespace()
     am_i_ally2 = 'ally2' in rospy.get_namespace()
-    am_i_ally1 = True # TODO REMOVE THIS
+    am_i_ally1 = False # TODO REMOVE THIS
+    am_i_ally2 = True # TODO REMOVE THIS
 
     _me = Robot(ally1=am_i_ally1, ally2=am_i_ally2)
     _ally = Robot(ally1=(not am_i_ally1), ally2=(not am_i_ally2))
@@ -83,20 +84,20 @@ def main():
 
     # Subscribe to Robot States
     #rospy.Subscriber('my_state', RobotState, lambda msg: _handle_robot_state(msg, 'me'))
-    rospy.Subscriber('pred_robot_state', Pose2D, lambda msg: _handle_robot_state(msg, 'me'))
+    rospy.Subscriber('pred_robot_state_ally2', Pose2D, lambda msg: _handle_robot_state(msg, 'me'))
     #rospy.Subscriber('ally_state', RobotState, lambda msg: _handle_robot_state(msg, 'ally'))
     #rospy.Subscriber('opponent1_state', RobotState, lambda msg: _handle_robot_state(msg, 'opp1'))
-    rospy.Subscriber('opponent1_state', Pose2D, lambda msg: _handle_robot_state(msg, 'opp1'))
+    # rospy.Subscriber('opponent1_state', Pose2D, lambda msg: _handle_robot_state(msg, 'opp1'))
     #rospy.Subscriber('opponent2_state', RobotState, lambda msg: _handle_robot_state(msg, 'opp2'))
 
     #rospy.Subscriber('ball_state', BallState, _handle_ball_state)
-    rospy.Subscriber('pred_ball_state', Pose2D, _handle_ball_state)
+    rospy.Subscriber('pred_ball_state_ally1', Pose2D, _handle_ball_state)
 
     # This message will tell us if we are to be playing or not right now
     # /game_state is competition gamestate, game_state is local testing ref
     rospy.Subscriber('game_state', GameState, _handle_game_state)
 
-    pub = rospy.Publisher('desired_position', Pose2D, queue_size=10)
+    pub = rospy.Publisher('desired_position_ally2', Pose2D, queue_size=10)
 
     rate = rospy.Rate(100) #100 Hz
     while not rospy.is_shutdown():

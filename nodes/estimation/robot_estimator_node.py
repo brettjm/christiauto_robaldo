@@ -82,10 +82,10 @@ def main():
    rospy.init_node('robot_estimator', anonymous=False)
 
    # subscribe to robot state and robot state
-   rospy.Subscriber('purple_chatter', Pose2D, _handle_robot_state)
+   rospy.Subscriber('tracker_ally2', Pose2D, _handle_robot_state)
   
    # publish predicted robot position
-   pub_predictedRobotPos = rospy.Publisher('pred_robot_state', Pose2D, queue_size=10)
+   pub_predictedRobotPos = rospy.Publisher('pred_robot_state_ally2', Pose2D, queue_size=10)
    msg_robot = Pose2D()
    
    # set sleep rate for loop to stay consistent 

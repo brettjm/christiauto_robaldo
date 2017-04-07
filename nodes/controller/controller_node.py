@@ -57,10 +57,10 @@ def main():
     rospy.init_node('controller', anonymous=False)
 
     # Sub/Pub
-    rospy.Subscriber('pred_robot_state', Pose2D, _handle_robot_state)
+    rospy.Subscriber('pred_robot_state_ally2', Pose2D, _handle_robot_state)
 
     # rospy.Subscriber('red_chatter', Pose2D, _handle_desired_position)
-    rospy.Subscriber('desired_position', Pose2D, _handle_desired_position)
+    rospy.Subscriber('desired_position_ally2', Pose2D, _handle_desired_position)
     
     #pub_PIDInfo = rospy.Publisher('pidinfo', PIDInfo, queue_size=10)
 
@@ -104,7 +104,7 @@ def main():
             rps3 = 0.0 if 0.15 >= abs(rps3) else rps3
 
 	        #5. Send wheel_velocities (rev/sec) to PSOC (has a PI controller) to get PWM
-            CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
+            # CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
 
             # debug
             # print("rps: %.2f, %.2f, %.2f" % (rps1, rps2, rps3))            
