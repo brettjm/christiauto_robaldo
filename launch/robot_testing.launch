@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<launch>
+   <!-- declare arg to be passed in -->
+   <arg name="team_side" default="home" />
+
+   <group ns="christiauto_robaldo_$(arg team_side)">
+
+      <node name="ball_estimator" pkg="christiauto_robaldo" type="ball_estimator_node.py" output="screen">
+      </node>
+
+      <node name="robot_estimator" pkg="christiauto_robaldo" type="robot_estimator_node.py" output="screen">
+      </node>
+
+      <node name="controller" pkg="christiauto_robaldo" type="controller_node.py" output="screen">
+      </node>
+
+      <node name="ai" pkg="christiauto_robaldo" type="ai_node.py" args="$(arg team_side)" output="screen">
+         <remap from="game_state" to="game_state" />
+      </node>
+
+   </group>
+</launch>
+
