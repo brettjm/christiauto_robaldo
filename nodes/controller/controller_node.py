@@ -59,14 +59,7 @@ def main():
     # Sub/Pub
     rospy.Subscriber('pred_robot_state_ally2', Pose2D, _handle_robot_state)
 
-    # rospy.Subscriber('red_chatter', Pose2D, _handle_desired_position)
     rospy.Subscriber('desired_position_ally2', Pose2D, _handle_desired_position)
-    
-    #pub_PIDInfo = rospy.Publisher('pidinfo', PIDInfo, queue_size=10)
-
-    # Get the correct PID stuff
-    #gains = rospy.get_param('gains') # returns as a dict
-    # {'x': {'P': 0, 'I': 0, 'D': 0}, ... }
 
     # initialize the controller and PSOC
     Controller.init()
@@ -77,19 +70,19 @@ def main():
 
     while not rospy.is_shutdown():
          global _ctrl_on
-#        Controller.move_to_location(_xhat, _yhat, _thetahat)
+         # Controller.move_to_location(_xhat, _yhat, _thetahat)
 
          if _ctrl_on:
-            # Controller.set_commanded_position(0, 0, 90) #Just go to the middle, for testing
+            # Controller.set_commanded_position(350, 250, 90) #Just go to the middle, for testing
 
-	        #2. Run positions through a P controller to get linear velocities
+	         #2. Run positions through a P controller to get linear velocities
             (vx, vy, w) = Controller.update(_ctrl_period, _xhat, _yhat, _thetahat)
             #print "vw, vy, and w are ", vx, vy, w
 	        
-	        #3. Run linear velocities through M matrix to get wheel_velocities
+	         #3. Run linear velocities through M matrix to get wheel_velocities
             (v1, v2, v3) = Relationship.world_to_wheels(vx, vy, w, _thetahat)
 
-	        #4. Convert wheel_velocities to rev/sec
+	         #4. Convert wheel_velocities to rev/sec
             (rps1, rps2, rps3) = Relationship.v_to_rps(v1, v2, v3)          
 
             # hack to rps values so they break friction threshold
@@ -103,7 +96,7 @@ def main():
             rps2 = 0.0 if 0.15 >= abs(rps2) else rps2
             rps3 = 0.0 if 0.15 >= abs(rps3) else rps3
 
-	        #5. Send wheel_velocities (rev/sec) to PSOC (has a PI controller) to get PWM
+	         #5. Send wheel_velocities (rev/sec) to PSOC (has a PI controller) to get PWM
             # CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
 
             # debug
@@ -112,7 +105,7 @@ def main():
          rate.sleep()
         
     CommandPSOC.disengage()
-    # spin() simply keeps python from exiting until this node is stopped
+    # simply keeps python from exiting until this node is stopped
     rospy.spin()
 
 if __name__ == '__main__':
