@@ -45,15 +45,10 @@ pulsePerRotation = 4955 #Old motors
 #pulsePerRotation = 116.2 #New motors
 
 def init():
-   # Set the PIDQ values for each motor. TODO: tune these values.
-   # defense values
-   # setPID(1, 3.5, 1.5, 100000)
-   # setPID(2, 3.5, 1.5, 100000)
-   # setPID(3, 3.5, 1.5, 100000) 
-   
-   setPID(1, 3.0, 1.0, 100000)
-   setPID(2, 3.0, 1.0, 100000)
-   setPID(3, 3.0, 1.0, 100000) 
+   # Set the PIDQ values for each motor.
+   setPID(1, 2.0, 3.0, 100000)
+   setPID(2, 2.0, 3.0, 100000)
+   setPID(3, 2.0, 3.0, 100000) 
 
    # Set tick period (triggers PID control) and velocity filter corner frequency
    setT(20, 50)

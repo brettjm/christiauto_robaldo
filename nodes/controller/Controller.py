@@ -21,19 +21,19 @@ def init():
     global P_x, P_y, P_theta
     
     # Proportional gains
-    kpx  = 0.83
-    kpy  = 0.83
+    kpx  = 0.005
+    kpy  = 0.005
     kpth = 0.03
     # kpth = 0.015
 
     # Derivative gains
-    kdx  = 5.4
-    kdy  = 5.4
-    kdth = 5.4
+    kdx  = .1
+    kdy  = .1
+    kdth = .1
 
     # Instantiate x, y, and th PD controller
-    P_x     = P(kpx,  kdx, 0.7, 0.05)
-    P_y     = P(kpy,  kdy, 0.7, 0.05)
+    P_x     = P(kpx,  kdx, 3.5, 0.05)
+    P_y     = P(kpy,  kdy, 3.5, 0.05)
     P_theta = P(kpth, kdth, 360, 0.05)
 
 
@@ -126,7 +126,7 @@ def update(time_since_last_update, xhat, yhat, thetahat):
 
     return velocities
 
-def _close(a, b, tolerance=0.010):
+def _close(a, b, tolerance=5):
     return abs(a - b) <= tolerance
 
 

@@ -2,6 +2,20 @@ import numpy as np
 
 M = 0
 
+class Vector(object):
+    """Vector object
+    Create an object with an x, y, theta based on magnitude and angle
+    """
+    def __init__(self, r, theta=0):
+        """
+        theta is expected in radians
+        """
+        super(Vector, self).__init__()
+        self.r = r
+        self.theta = theta
+        self.x = r*np.cos(theta)
+        self.y = r*np.sin(theta)
+
 # All measurements in m
 def init():
     global M
@@ -21,6 +35,26 @@ def init():
     sy2 = -0.824
     sx3 = 1
     sy3 = 0
+
+    # R = .0282977488817 # radius of wheel
+    # r = .035 # radius from robot center to each wheel
+
+    # # r_k is a vector that points from center of robot to center of each wheel
+    # r1 = Vector(r,theta=np.pi/3)
+    # r2 = Vector(r,theta=np.pi)
+    # r3 = Vector(r,theta=5*np.pi/3)
+
+    # # s_k is a unit vector that points in the direction of spin
+    # s1 = Vector(1,theta=(r1.theta + np.pi/2))
+    # s2 = Vector(1,theta=(r2.theta + np.pi/2))
+    # s3 = Vector(1,theta=(r3.theta + np.pi/2))
+
+    # # Create the M matrix that relates body and world coordinates
+    # mSub = np.matrix([ [s1.x, s1.y, (s1.y*r1.x - s1.x*r1.y)],
+    #                    [s2.x, s2.y, (s2.y*r2.x - s2.x*r2.y)],
+    #                    [s3.x, s3.y, (s3.y*r3.x - s3.x*r3.y)]
+    #                  ])
+    # M = (1.0/R)*mSub
 
     Msub = np.matrix([[sx1, sy1, (sy1*rx1 - sx1*ry1)], 
                       [sx2, sy2, (sy2*rx2 - sx2*ry2)], 

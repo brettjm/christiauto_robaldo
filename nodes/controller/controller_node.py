@@ -61,6 +61,7 @@ def main():
     rospy.Subscriber('pred_robot_state_ally2', Pose2D, _handle_robot_state)
 
     rospy.Subscriber('desired_position_ally2', Pose2D, _handle_desired_position)
+    # Controller.set_commanded_position(0, 250, 0) #Just go to the middle, for testing
 
     # initialize the controller and PSOC
     Controller.init()
@@ -71,16 +72,16 @@ def main():
 
     while not rospy.is_shutdown():
          global _ctrl_on
-         # Controller.move_to_location(_xhat, _yhat, _thetahat)
+         #Controller.move_to_location(_xhat, _yhat, _thetahat)
 
          if _ctrl_on:
-            # Controller.set_commanded_position(350, 250, 90) #Just go to the middle, for testing
-            reverse_timer += 1
-            im_stuck_timer += 1
+            # Controller.set_commanded_position(230, 0, 0) #Just go to the middle, for testing
 
-	         #2. Run positions through a P controller to get linear velocities
+            # reverse_timer += 1
+            # im_stuck_timer += 1
+	        
+             #2. Run positions through a P controller to get linear velocities
             (vx, vy, w) = Controller.update(_ctrl_period, _xhat, _yhat, _thetahat)
-            #print "vw, vy, and w are ", vx, vy, w
 	        
 	         #3. Run linear velocities through M matrix to get wheel_velocities
             (v1, v2, v3) = Relationship.world_to_wheels(vx, vy, w, _thetahat)
@@ -99,9 +100,9 @@ def main():
             rps2 = 0.0 if 0.15 >= abs(rps2) else rps2
             rps3 = 0.0 if 0.15 >= abs(rps3) else rps3
 
-            if im_stuck_timer >= one_second:
-                _xhatd1, _yhatd1, _thetahatd1 = _xhat, _yhat, _thetahat
-                im_stuck_timer = 0
+            # if im_stuck_timer >= one_second:
+            #     _xhatd1, _yhatd1, _thetahatd1 = _xhat, _yhat, _thetahat
+            #     im_stuck_timer = 0
 
 
             # if reverse_timer >= two_seconds:
@@ -114,7 +115,7 @@ def main():
             #         print
 
 	         #5. Send wheel_velocities (rev/sec) to PSOC (has a PI controller) to get PWM
-            # CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
+            CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
 
             # debug
             # print("rps: %.2f, %.2f, %.2f" % (rps1, rps2, rps3))            

@@ -32,7 +32,7 @@ ally1_start_pos     = [-0.50, 0, 0]
 if team_side == 'home':
    ally2_start_pos     = [goal_position_home[0]+goalie_radius, 0, 0]
 else:
-   ally2_start_pos     = [goal_position_opp[0]-goalie_radius, 0, 0]  
+   ally2_start_pos     = [goal_position_opp[0]-goalie_radius, 0, 180]  
 
 teammate_gap        = robot_width + 0.20
 

@@ -66,7 +66,7 @@ def main():
    rospy.Subscriber('tracker_ball', Pose2D, _handle_ball_state)
   
    # publish predicted ball position
-   pub_predictedBallPos = rospy.Publisher('pred_ball_state_ally2', Pose2D, queue_size=10)
+   pub_predictedBallPos = rospy.Publisher('pred_ball_state_ally1', Pose2D, queue_size=10)
    msg_ball = Pose2D()
    
    # set sleep rate for loop to stay consistent 
