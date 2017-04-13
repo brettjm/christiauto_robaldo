@@ -19,26 +19,11 @@ velocities = (0, 0, 0)
 
 def init():
     global P_x, P_y, P_theta
-
-    # Set the gains, or use default gains 
-    # slightly above .005 is really nice
-    # theta needs to be pretty high > .5
-
-    # # defense gains
-    # xP = .006
-    # yP = .02
-    # thetaP = .08
-
-    # # P(kp, kd, limit, tau) tau isn't used
-    # P_x  = P(xP, 1.0, 0.05)
-    # P_y  = P(yP, 1.1, 0.05)
-    # P_theta = P(thetaP, 400, 0.05)
-
     
     # Proportional gains
-    kpx  = 0.835
-    kpy  = 0.835
-    kpth = 0.035
+    kpx  = 0.83
+    kpy  = 0.83
+    kpth = 0.03
     # kpth = 0.015
 
     # Derivative gains

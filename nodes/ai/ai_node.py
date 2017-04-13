@@ -1,16 +1,11 @@
 #!/usr/bin/env python
 import sys
-
 import rospy
+import numpy as np
+import Strategy, Constants
 from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Bool
-
-#from christiauto_robaldo.msg import BallState, RobotState
 from soccerref.msg import GameState
-
-import numpy as np
-
-import Strategy, Constants
 from GameObjects import Ball, Robot
 
 _me = None
@@ -60,8 +55,8 @@ def _create_robots():
     global  _me, _ally, _opp1, _opp2
     am_i_ally1 = 'ally1' in rospy.get_namespace()
     am_i_ally2 = 'ally2' in rospy.get_namespace()
-    am_i_ally1 = False # TODO REMOVE THIS
-    am_i_ally2 = True # TODO REMOVE THIS
+    am_i_ally1 = False
+    am_i_ally2 = True
 
     _me = Robot(ally1=am_i_ally1, ally2=am_i_ally2)
     _ally = Robot(ally1=(not am_i_ally1), ally2=(not am_i_ally2))
@@ -73,8 +68,8 @@ def main():
 
     # are we home or away?
     global _team_side
-    # param_name = rospy.search_param('team_side')
-    _team_side = sys.argv[1] #rospy.get_param(param_name, 'home')
+    _team_side = sys.argv[1]
+    Constants.team_side = _team_side
 
     # Create robot objects that store that current robot's state
     _create_robots()
@@ -83,14 +78,12 @@ def main():
     _ball = Ball()
 
     # Subscribe to Robot States
-    #rospy.Subscriber('my_state', RobotState, lambda msg: _handle_robot_state(msg, 'me'))
     rospy.Subscriber('pred_robot_state_ally2', Pose2D, lambda msg: _handle_robot_state(msg, 'me'))
     #rospy.Subscriber('ally_state', RobotState, lambda msg: _handle_robot_state(msg, 'ally'))
     #rospy.Subscriber('opponent1_state', RobotState, lambda msg: _handle_robot_state(msg, 'opp1'))
     # rospy.Subscriber('opponent1_state', Pose2D, lambda msg: _handle_robot_state(msg, 'opp1'))
     #rospy.Subscriber('opponent2_state', RobotState, lambda msg: _handle_robot_state(msg, 'opp2'))
 
-    #rospy.Subscriber('ball_state', BallState, _handle_ball_state)
     rospy.Subscriber('pred_ball_state_ally1', Pose2D, _handle_ball_state)
 
     # This message will tell us if we are to be playing or not right now
@@ -114,6 +107,7 @@ def main():
                 msg.x = Constants.ally1_start_pos[0]
                 msg.y = Constants.ally1_start_pos[1]
                 msg.theta = Constants.ally1_start_pos[2]
+                
                 # Convert to our coordinate system
                 msg.x = msg.x * 176 + 300
                 msg.y = msg.y * 168 + 200
@@ -121,6 +115,10 @@ def main():
                 msg.x = Constants.ally2_start_pos[0]
                 msg.y = Constants.ally2_start_pos[1]
                 msg.theta = Constants.ally2_start_pos[2]
+                
+                # Convert to our coordinate system
+                msg.x = msg.x * 176 + 300
+                msg.y = msg.y * 168 + 200
         else:
             # Run AI as normal
             msg.x = x_c
@@ -131,7 +129,6 @@ def main():
         # reset, then the AI node is out of a job.
         if _game_state.play or _game_state.reset_field:
             pub.publish(msg)
-
         rate.sleep()
 
     # spin() simply keeps python from exiting until this node is stopped

@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 import rospy
-from geometry_msgs.msg import Twist, Pose2D
-# from std_srvs.srv import Trigger, TriggerResponse
-
-#from christiauto_robaldo.msg import PIDInfo, RobotState
-
 import numpy as np
-
 import Controller
 import Relationship
 import CommandPSOC
+from geometry_msgs.msg import Twist, Pose2D
 
 # Steps to execute in controller_node:
 #  1. Get actual position and desired position
@@ -54,6 +49,12 @@ def _handle_desired_position(msg):
 
 def main():
     global _xhat, _yhat, _thetahat, _arrived
+
+    two_seconds = 200
+    one_second  = 100
+    reverse_timer = 0
+    im_stuck_timer = 0
+
     rospy.init_node('controller', anonymous=False)
 
     # Sub/Pub
@@ -74,6 +75,8 @@ def main():
 
          if _ctrl_on:
             # Controller.set_commanded_position(350, 250, 90) #Just go to the middle, for testing
+            reverse_timer += 1
+            im_stuck_timer += 1
 
 	         #2. Run positions through a P controller to get linear velocities
             (vx, vy, w) = Controller.update(_ctrl_period, _xhat, _yhat, _thetahat)
@@ -86,7 +89,7 @@ def main():
             (rps1, rps2, rps3) = Relationship.v_to_rps(v1, v2, v3)          
 
             # hack to rps values so they break friction threshold
-            limhigh = 0.65
+            limhigh = 0.60
             rps1 = np.sign(rps1)*limhigh if 0.15 < abs(rps1) and abs(rps1) < limhigh else rps1
             rps2 = np.sign(rps2)*limhigh if 0.15 < abs(rps2) and abs(rps2) < limhigh else rps2
             rps3 = np.sign(rps3)*limhigh if 0.15 < abs(rps3) and abs(rps3) < limhigh else rps3
@@ -95,6 +98,20 @@ def main():
             rps1 = 0.0 if 0.15 >= abs(rps1) else rps1
             rps2 = 0.0 if 0.15 >= abs(rps2) else rps2
             rps3 = 0.0 if 0.15 >= abs(rps3) else rps3
+
+            if im_stuck_timer >= one_second:
+                _xhatd1, _yhatd1, _thetahatd1 = _xhat, _yhat, _thetahat
+                im_stuck_timer = 0
+
+
+            # if reverse_timer >= two_seconds:
+
+            #     reverse_timer = 0
+            #     reversing += 1
+
+            #     if reversing >= half_second:
+            #         reversing = 0
+            #         print
 
 	         #5. Send wheel_velocities (rev/sec) to PSOC (has a PI controller) to get PWM
             # CommandPSOC.setWheelVelocities(rps1, rps2, rps3)

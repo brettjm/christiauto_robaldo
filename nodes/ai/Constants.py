@@ -1,10 +1,12 @@
+team_side = None
+
 # field constants. Distances measured in meters
 field_length        = 3.40 # (134 in)  ## Old field was 3.68 # (12ft) 
 field_width         = 2.38 # (93.875 in) ## Old field was 2.62 # (8.58 ft)
 fourth_field_length = field_length/4
 half_field          = 0
 
-robot_width         = 0.196 # (7.0 in)
+robot_width         = 0.175 # (7.0 in)
 robot_half_width    = robot_width/2
 # add constant that is the front of the robot, where we actually kick.
 
@@ -27,7 +29,10 @@ kickable_distance   = 0.04
 steal_ball_dist     = robot_half_width + 0.12
 
 ally1_start_pos     = [-0.50, 0, 0]
-ally2_start_pos     = [goal_position_home[0]+goalie_radius, 0, 0]
+if team_side == 'home':
+   ally2_start_pos     = [goal_position_home[0]+goalie_radius, 0, 0]
+else:
+   ally2_start_pos     = [goal_position_opp[0]-goalie_radius, 0, 0]  
 
 teammate_gap        = robot_width + 0.20
 
