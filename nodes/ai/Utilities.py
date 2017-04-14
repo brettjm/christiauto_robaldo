@@ -1,15 +1,16 @@
-from collections import Iterable
 import numpy as np 
-
 import Constants
+import sys
+from collections import Iterable
 from GameObjects import Robot
 
+_team_side = sys.argv[1]
 _ally1_stuck_counter    = 0
 _ALLY1_STUCK_MAX        = 500
 _ally2_stuck_counter    = 0
 _ALLY2_STUCK_MAX        = 500
 _ally1_prev_pos         = (Constants.ally1_start_pos[0], Constants.ally1_start_pos[1])
-_ally2_prev_pos         = (Constants.ally2_start_pos[0], Constants.ally2_start_pos[1])
+_ally2_prev_pos         = (Constants.get_ally2_start_pos(_team_side)[0], Constants.get_ally2_start_pos(_team_side)[1])
 
 _stuck                  = False
 

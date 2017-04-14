@@ -69,7 +69,7 @@ def main():
     # are we home or away?
     global _team_side
     _team_side = sys.argv[1]
-    Constants.team_side = _team_side
+    # Constants.team_side = _team_side
 
     # Create robot objects that store that current robot's state
     _create_robots()
@@ -102,6 +102,13 @@ def main():
         msg = Pose2D()           
 
         if _game_state.reset_field:
+            # Change team side if in second half
+            if _game_state.second_half == True:
+                if sys.argv[1] == 'home':
+                    _team_side = 'away'
+                else:
+                    _team_side = 'home'
+
             # Send robot to home
             if _me.ally1:
                 msg.x = Constants.ally1_start_pos[0]
@@ -112,9 +119,9 @@ def main():
                 msg.x = msg.x * 176 + 300
                 msg.y = msg.y * 168 + 200
             elif _me.ally2:
-                msg.x = Constants.ally2_start_pos[0]
-                msg.y = Constants.ally2_start_pos[1]
-                msg.theta = Constants.ally2_start_pos[2]
+                msg.x = Constants.get_ally2_start_pos(_team_side)[0]
+                msg.y = Constants.get_ally2_start_pos(_team_side)[1]
+                msg.theta = Constants.get_ally2_start_pos(_team_side)[2]
                 
                 # Convert to our coordinate system
                 msg.x = msg.x * 176 + 300

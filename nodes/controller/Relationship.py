@@ -36,8 +36,14 @@ def init():
     sx3 = 1
     sy3 = 0
 
+    Msub = np.matrix([[sx1, sy1, (sy1*rx1 - sx1*ry1)], 
+                      [sx2, sy2, (sy2*rx2 - sx2*ry2)], 
+                      [sx3, sy3, (sy3*rx3 - sx3*ry3)]])
+    M = (1.0/R)*Msub
+
+
     # R = .0282977488817 # radius of wheel
-    # r = .035 # radius from robot center to each wheel
+    # r = .078 # radius from robot center to each wheel
 
     # # r_k is a vector that points from center of robot to center of each wheel
     # r1 = Vector(r,theta=np.pi/3)
@@ -55,11 +61,6 @@ def init():
     #                    [s3.x, s3.y, (s3.y*r3.x - s3.x*r3.y)]
     #                  ])
     # M = (1.0/R)*mSub
-
-    Msub = np.matrix([[sx1, sy1, (sy1*rx1 - sx1*ry1)], 
-                      [sx2, sy2, (sy2*rx2 - sx2*ry2)], 
-                      [sx3, sy3, (sy3*rx3 - sx3*ry3)]])
-    M = (1.0/R)*Msub
 
 def world_to_wheels(vx, vy, w, th):
     global M  

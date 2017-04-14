@@ -61,7 +61,7 @@ def main():
     rospy.Subscriber('pred_robot_state_ally2', Pose2D, _handle_robot_state)
 
     rospy.Subscriber('desired_position_ally2', Pose2D, _handle_desired_position)
-    # Controller.set_commanded_position(0, 250, 0) #Just go to the middle, for testing
+    # Controller.set_commanded_position(0, 300, 0) #Just go to the middle, for testing
 
     # initialize the controller and PSOC
     Controller.init()

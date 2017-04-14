@@ -32,8 +32,8 @@ def init():
     kdth = .1
 
     # Instantiate x, y, and th PD controller
-    P_x     = P(kpx,  kdx, 3.5, 0.05)
-    P_y     = P(kpy,  kdy, 3.5, 0.05)
+    P_x     = P(kpx,  kdx, 3.0, 0.05)
+    P_y     = P(kpy,  kdy, 3.0, 0.05)
     P_theta = P(kpth, kdth, 360, 0.05)
 
 
@@ -73,19 +73,16 @@ def update(time_since_last_update, xhat, yhat, thetahat):
         print "Controller hasn't been intialized properly"
         return (0, 0, 0)
 
-#    print "_set_point = ", _set_point
-#    print "x, y, and theta = ", xhat, yhat, thetahat
-
     # We've had another motion loop!
     _loop_count = _loop_count + 1
 
     # Only update theta every _theta_loops times
-    # if _loop_count == _theta_loops:
-    #     update_theta = True
-    #     _loop_count = 0
-    # else:
-    #     update_theta = False
-    update_theta = True
+    if _loop_count == _theta_loops:
+        update_theta = True
+        _loop_count = 0
+    else:
+        update_theta = False
+    # update_theta = True
     
     # Break out variables for easy access
     x_c = _set_point[0]
@@ -114,7 +111,7 @@ def update(time_since_last_update, xhat, yhat, thetahat):
         #         theta_c = theta_c + 360
         #     else:
         #         theta_c = theta_c - 360
-	#print "Updating theta"
+        
         w  = P_theta.update(theta_c, thetahat, Ts, max_error_window=0)
 
     #print ("vx: %.1f, vy: %.1f, w: %.1f" % (vx, vy, w))
@@ -126,7 +123,7 @@ def update(time_since_last_update, xhat, yhat, thetahat):
 
     return velocities
 
-def _close(a, b, tolerance=5):
+def _close(a, b, tolerance=10):
     return abs(a - b) <= tolerance
 
 
