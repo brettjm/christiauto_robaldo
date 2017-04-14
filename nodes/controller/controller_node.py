@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 import rospy
-from geometry_msgs.msg import Twist, Pose2D
-# from std_srvs.srv import Trigger, TriggerResponse
-
-#from christiauto_robaldo.msg import PIDInfo, RobotState
-
 import numpy as np
-
 import Controller
 import Relationship
 import CommandPSOC
+from geometry_msgs.msg import Twist, Pose2D
 
 # Steps to execute in controller_node:
 #  1. Get actual position and desired position
@@ -36,16 +31,6 @@ def _handle_robot_state(msg):
     _yhat = msg.y
     _thetahat = msg.theta
 
-    #if _initializing:
-    #    _initializing = False
-    #    _ctrl_on = True
-
-        #x = rospy.get_param('x_init')
-        #y = rospy.get_param('y_init')
-        #theta = rospy.get_param('theta_init')
-
-    #Controller.set_commanded_position(_xhat, _yhat, _thetahat)
-
 def _handle_desired_position(msg):
     global _ctrl_on
     Controller.set_commanded_position(msg.x, msg.y, msg.theta)
@@ -59,14 +44,8 @@ def main():
     # Sub/Pub
     rospy.Subscriber('pred_robot_state_ally1', Pose2D, _handle_robot_state)
 
-    # rospy.Subscriber('red_chatter', Pose2D, _handle_desired_position)
+    # Controller.set_commanded_position(0, 0, 180) 
     rospy.Subscriber('desired_position_ally1', Pose2D, _handle_desired_position)
-    
-    #pub_PIDInfo = rospy.Publisher('pidinfo', PIDInfo, queue_size=10)
-
-    # Get the correct PID stuff
-    #gains = rospy.get_param('gains') # returns as a dict
-    # {'x': {'P': 0, 'I': 0, 'D': 0}, ... }
 
     # initialize the controller and PSOC
     Controller.init()
@@ -104,7 +83,7 @@ def main():
             rps3 = 0.0 if 0.15 >= abs(rps3) else rps3
 
 	        #5. Send wheel_velocities (rev/sec) to PSOC (has a PI controller) to get PWM
-            # CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
+            CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
 
             # debug
             # print("rps: %.2f, %.2f, %.2f" % (rps1, rps2, rps3))            
