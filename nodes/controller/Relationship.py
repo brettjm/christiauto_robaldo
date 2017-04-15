@@ -6,14 +6,14 @@ M = 0
 def init():
     global M
 
-    R = .035    #radius of the wheels (in m)
+    R = 0.025 #.035    #radius of the wheels (in m)
 
     rx1 = 0.067
     ry1 = 0.038
     rx2 = -0.067
     ry2 = 0.038
     rx3 = 0
-    ry3 = -0.038
+    ry3 = -0.078 #-0.038
     
     sx1 = -0.567
     sy1 = 0.824

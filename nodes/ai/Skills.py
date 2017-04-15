@@ -1,9 +1,9 @@
 import time
 import numpy as np
-
 import rospy
 from std_srvs.srv import Trigger
 
+import kicker
 import Utilities
 import Constants
 
@@ -21,7 +21,7 @@ class OwnGoalState:
 _clear_ball_st  = ClearBallState.setup
 _own_goal_st    = OwnGoalState.perp_setup
 _went_to_perp_first = False # This avoids the state machine starting in the 'behind_setup' and ruining the whole avoid own goal function
-
+kicker.kick_init()
 _kick_num = 0
 
 #################################################
@@ -47,13 +47,13 @@ def kick():
     """
     global _kick_num
     try:
-        kick_srv = rospy.ServiceProxy('kick', Trigger)
-        kick_srv()
+        kicker.kick()
+        # kick_srv = rospy.ServiceProxy('kick', Trigger)
+        # kick_srv()
         _kick_num = _kick_num + 1
         #print ("Kicking. Kick number: {}" .format(_kick_num))
     except rospy.ServiceException, e:
         print "Kick service call failed: %s"%e
-
 
 def set_up_kick_facing_goal(ball, distance_from_center_of_goal):
     """Set Up kick

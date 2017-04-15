@@ -72,7 +72,7 @@ def main():
             (rps1, rps2, rps3) = Relationship.v_to_rps(v1, v2, v3)          
 
             # hack to rps values so they break friction threshold
-            limhigh = 0.65
+            limhigh = 0.75
             rps1 = np.sign(rps1)*limhigh if 0.15 < abs(rps1) and abs(rps1) < limhigh else rps1
             rps2 = np.sign(rps2)*limhigh if 0.15 < abs(rps2) and abs(rps2) < limhigh else rps2
             rps3 = np.sign(rps3)*limhigh if 0.15 < abs(rps3) and abs(rps3) < limhigh else rps3
