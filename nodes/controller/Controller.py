@@ -21,20 +21,24 @@ def init():
     global P_x, P_y, P_theta
 
     # Proportional gains
-    kpx  =  0.006
-    kpy  =  0.006
-    kpth = -0.07
-    # kpth = 0.015
+    kpx  =  0.004
+    kpy  =  0.004
+    kpth = -0.08
 
     # Derivative gains
-    kdx  = .1
-    kdy  = .1
+    kdx  = -.003
+    kdy  = -.001
     kdth = .1
 
+    # Intergral gains
+    kix  = 0
+    kiy  = 0
+    kith = -.001
+
     # Instantiate x, y, and th PD controller
-    P_x     = P(kpx,  kdx, 4.0, 0.05)
-    P_y     = P(kpy,  kdy, 4.0, 0.05)
-    P_theta = P(kpth, kdth, 360, 0.05)
+    P_x     = P(kpx,  kdx, kix, 4.0, 0.05)
+    P_y     = P(kpy,  kdy, kiy, 4.0, 0.05)
+    P_theta = P(kpth, kdth, kith, 360, 0.05)
 
 
 def set_commanded_position(x, y, theta):
@@ -64,24 +68,13 @@ def update(time_since_last_update, xhat, yhat, thetahat):
     global velocities, _arrived, _loop_count
 
     if _arrived:
-        # print "Quiting on _arrived."
+        print "Quiting on _arrived."
         return (0, 0, 0)  # Don't even try
 
     if P_x is None or P_y is None or P_theta is None:
         # Controller hasn't been properly initialized
         print "Controller hasn't been intialized properly"
         return (0, 0, 0)
-
-    # We've had another motion loop!
-    _loop_count = _loop_count + 1
-
-    # Only update theta every _theta_loops times
-    if _loop_count == _theta_loops:
-        update_theta = True
-        _loop_count = 0
-    else:
-        update_theta = False
-    # update_theta = True
     
     # Break out variables for easy access
     x_c = _set_point[0]
@@ -99,8 +92,27 @@ def update(time_since_last_update, xhat, yhat, thetahat):
 
     if not _close(y_c, yhat):
         vy = P_y.update(y_c, yhat, Ts)
+
+    # We've had another motion loop!
+    _loop_count = _loop_count + 1
+
+    # Only update theta every _theta_loops times
+    if  (
+            # _loop_count == _theta_loops #and
+            _close(x_c, xhat) and
+            _close(y_c, yhat)
+        ):
+        update_theta = True
+        _loop_count = 0
+    else:
+        update_theta = False
+    # update_theta = True
     
-    if update_theta and not _close(theta_c, thetahat, tolerance=30): # degrees
+    if  (   
+            update_theta and 
+            not _close(theta_c, thetahat, tolerance=30) and
+            not (abs(thetahat-theta_c) > (360 - 20))
+        ): # degrees
         # Since the max distance you should ever go is 180 degrees,
         # test to see so that the commanded value is proportional to
         # the error between commanded and actual.
@@ -111,6 +123,7 @@ def update(time_since_last_update, xhat, yhat, thetahat):
         #     else:
         #         theta_c = theta_c - 360
 	
+        # if abs(diff) > (360 - tolerance) 
         w  = P_theta.update(theta_c, thetahat, Ts, max_error_window=0)
 
     #print ("vx: %.1f, vy: %.1f, w: %.1f" % (vx, vy, w))
@@ -122,7 +135,7 @@ def update(time_since_last_update, xhat, yhat, thetahat):
 
     return velocities
 
-def _close(a, b, tolerance=10):
+def _close(a, b, tolerance=20):
     return abs(a - b) <= tolerance
 
 
