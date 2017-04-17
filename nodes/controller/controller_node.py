@@ -44,8 +44,8 @@ def main():
     # Sub/Pub
     rospy.Subscriber('pred_robot_state_ally1', Pose2D, _handle_robot_state)
 
-    # Controller.set_commanded_position(0, 60, 0) 
-    # rospy.Subscriber('desired_position_ally1', Pose2D, _handle_desired_position)
+    # Controller.set_commanded_position(200, 0, 0) 
+    rospy.Subscriber('desired_position_ally1', Pose2D, _handle_desired_position)
 
     # initialize the controller and PSOC
     Controller.init()
@@ -59,7 +59,7 @@ def main():
 #        Controller.move_to_location(_xhat, _yhat, _thetahat)
 
          if _ctrl_on:
-            Controller.set_commanded_position(500, 300, 90) 
+            # Controller.set_commanded_position(400, 300, 90) 
 
 	        #2. Run positions through a P controller to get linear velocities
             (vx, vy, w) = Controller.update(_ctrl_period, _xhat, _yhat, _thetahat)
@@ -73,20 +73,21 @@ def main():
 
             # hack to rps values so they break friction threshold
             limhigh = 1.75
-            rps1 = np.sign(rps1)*limhigh if 0.15 < abs(rps1) and abs(rps1) < limhigh else rps1
-            rps2 = np.sign(rps2)*limhigh if 0.15 < abs(rps2) and abs(rps2) < limhigh else rps2
-            rps3 = np.sign(rps3)*limhigh if 0.15 < abs(rps3) and abs(rps3) < limhigh else rps3
+            limlow = 0.05
+            rps1 = np.sign(rps1)*limhigh if limlow < abs(rps1) and abs(rps1) < limhigh else rps1
+            rps2 = np.sign(rps2)*limhigh if limlow < abs(rps2) and abs(rps2) < limhigh else rps2
+            rps3 = np.sign(rps3)*limhigh if limlow < abs(rps3) and abs(rps3) < limhigh else rps3
 
             # just stop, don't even try when this close
-            rps1 = 0.0 if 0.15 >= abs(rps1) else rps1
-            rps2 = 0.0 if 0.15 >= abs(rps2) else rps2
-            rps3 = 0.0 if 0.15 >= abs(rps3) else rps3
+            rps1 = 0.0 if limlow >= abs(rps1) else rps1
+            rps2 = 0.0 if limlow >= abs(rps2) else rps2
+            rps3 = 0.0 if limlow >= abs(rps3) else rps3
 
 	        #5. Send wheel_velocities (rev/sec) to PSOC (has a PI controller) to get PWM
             CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
 
             # debug
-            print("rps: %.2f, %.2f, %.2f" % (rps1, rps2, rps3))            
+            # print("rps: %.2f, %.2f, %.2f" % (rps1, rps2, rps3))            
             
          rate.sleep()
         

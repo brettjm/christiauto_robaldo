@@ -42,18 +42,12 @@ def get_unstuck(me):
 ##########################################
 def kick():
     """Kick
-
     Send a service call to kick the ball.
     """
+    print "kick"
     global _kick_num
-    try:
-        kicker.kick()
-        # kick_srv = rospy.ServiceProxy('kick', Trigger)
-        # kick_srv()
-        _kick_num = _kick_num + 1
-        #print ("Kicking. Kick number: {}" .format(_kick_num))
-    except rospy.ServiceException, e:
-        print "Kick service call failed: %s"%e
+    kicker.kick()
+    _kick_num = _kick_num + 1
 
 def set_up_kick_facing_goal(ball, distance_from_center_of_goal):
     """Set Up kick

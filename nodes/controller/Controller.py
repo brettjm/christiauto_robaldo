@@ -13,7 +13,7 @@ _arrived = False
 
 # These let us update theta at smaller rates than x and y
 _loop_count = 0
-_theta_loops = 1 # so every 2 loops do theta controller
+_theta_loops = 2 # so every 2 loops do theta controller
 
 velocities = (0, 0, 0)
 
@@ -23,7 +23,7 @@ def init():
     # Proportional gains
     kpx  =  0.004
     kpy  =  0.004
-    kpth = -0.08
+    kpth = -0.09
 
     # Derivative gains
     kdx  = -.003
@@ -33,11 +33,11 @@ def init():
     # Intergral gains
     kix  = 0
     kiy  = 0
-    kith = -.001
+    kith = -.0001
 
     # Instantiate x, y, and th PD controller
-    P_x     = P(kpx,  kdx, kix, 4.0, 0.05)
-    P_y     = P(kpy,  kdy, kiy, 4.0, 0.05)
+    P_x     = P(kpx,  kdx, kix, .5, 0.05)
+    P_y     = P(kpy,  kdy, kiy, .5, 0.05)
     P_theta = P(kpth, kdth, kith, 360, 0.05)
 
 
@@ -98,7 +98,7 @@ def update(time_since_last_update, xhat, yhat, thetahat):
 
     # Only update theta every _theta_loops times
     if  (
-            # _loop_count == _theta_loops #and
+            # _loop_count % _theta_loops == 0 and
             _close(x_c, xhat) and
             _close(y_c, yhat)
         ):
@@ -106,24 +106,22 @@ def update(time_since_last_update, xhat, yhat, thetahat):
         _loop_count = 0
     else:
         update_theta = False
-    # update_theta = True
     
     if  (   
             update_theta and 
-            not _close(theta_c, thetahat, tolerance=30) and
+            not _close(theta_c, thetahat, tolerance=20) and
             not (abs(thetahat-theta_c) > (360 - 20))
         ): # degrees
         # Since the max distance you should ever go is 180 degrees,
         # test to see so that the commanded value is proportional to
         # the error between commanded and actual.
         # Basically, this makes going in circles cooler.
-        # if abs(thetahat-theta_c) > 180:
-        #     if theta_c < thetahat:
-        #         theta_c = theta_c + 360
-        #     else:
-        #         theta_c = theta_c - 360
+        if abs(thetahat-theta_c) > 180:
+            if theta_c < thetahat:
+                theta_c = theta_c + 360
+            else:
+                theta_c = theta_c - 360
 	
-        # if abs(diff) > (360 - tolerance) 
         w  = P_theta.update(theta_c, thetahat, Ts, max_error_window=0)
 
     #print ("vx: %.1f, vy: %.1f, w: %.1f" % (vx, vy, w))
@@ -135,7 +133,7 @@ def update(time_since_last_update, xhat, yhat, thetahat):
 
     return velocities
 
-def _close(a, b, tolerance=20):
+def _close(a, b, tolerance=30):
     return abs(a - b) <= tolerance
 
 

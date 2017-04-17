@@ -37,7 +37,7 @@ class P(object):
         # compute the P control signal
         u_unsat = self.kp*error - self.kd*self.xdot + self.ki*self.error_total
         u = self._sat(u_unsat)      
-
+        
         return u
 
     def _sat(self, val):
