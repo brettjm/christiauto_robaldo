@@ -20,7 +20,7 @@ class Vector(object):
 def init():
     global M
 
-    R = 0.025 #.035    #radius of the wheels (in m)
+    R = 0.018 #.025    #radius of the wheels (in m)
 
     rx1 = 0.067  #0.067
     ry1 = 0.036  #0.038

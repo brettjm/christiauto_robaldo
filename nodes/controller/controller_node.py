@@ -28,18 +28,8 @@ def _handle_robot_state(msg):
     global _xhat, _yhat, _thetahat, _initializing, _ctrl_on
 
     _xhat = msg.x
-    # _yhat = msg.y
-    # _thetahat = msg.theta
-
-    #if _initializing:
-    #    _initializing = False
-    #    _ctrl_on = True
-
-        #x = rospy.get_param('x_init')
-        #y = rospy.get_param('y_init')
-        #theta = rospy.get_param('theta_init')
-
-    #Controller.set_commanded_position(_xhat, _yhat, _thetahat)
+    _yhat = msg.y
+    _thetahat = msg.theta
 
 def _handle_desired_position(msg):
     global _ctrl_on
@@ -54,7 +44,7 @@ def main():
 
     # Sub/Pub
     # rospy.Subscriber('pred_robot_state_ally2', Pose2D, _handle_robot_state)
-    rospy.Subscriber('tracker_opponent1', Pose2D, _handle_robot_state)
+    rospy.Subscriber('pred_robot_state_ally2', Pose2D, _handle_robot_state)
 
     # rospy.Subscriber('desired_position_ally2', Pose2D, _handle_desired_position)
 
@@ -70,7 +60,7 @@ def main():
          #Controller.move_to_location(_xhat, _yhat, _thetahat)
 
          if _ctrl_on:
-            Controller.set_commanded_position(1.7, 0, 0) #Just go to the middle, for testing
+            Controller.set_commanded_position(3, 1.11, 90) #Just go to the middle, for testing
 
              #2. Run positions through a P controller to get linear velocities
             (vx, vy, w) = Controller.update(_ctrl_period, _xhat, _yhat, _thetahat)

@@ -21,7 +21,7 @@ Tc = .01 # sample rate of controller
 
 robot = Robot(0, 0, 0)
 runCorrector = False
-alpha = 0.1 #close to 0 for lots of noise, close to 1 for little noise
+alpha = 0.2 #close to 0 for lots of noise, close to 1 for little noise
 beta = 0.95
 meas_x = 0.0
 meas_y = 0.0

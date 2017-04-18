@@ -45,13 +45,13 @@ def init():
 #####################################################
 #                   Pixel gains
     # Proportional gains
-    kpx  =  0.757
-    kpy  =  0.757
+    kpx  =  1.2
+    kpy  =  1.2
     kpth = -.09
 
     # Derivative gains
-    kdx  = -.7
-    kdy  = -.3
+    kdx  = -.9
+    kdy  = -.7
     kdth = .1
 
     # Intergral gains
