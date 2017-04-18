@@ -44,29 +44,38 @@ def kick():
     """Kick
     Send a service call to kick the ball.
     """
-    print "kick"
     global _kick_num
     kicker.kick()
     _kick_num = _kick_num + 1
 
-def set_up_kick_facing_goal(ball, distance_from_center_of_goal):
+def set_up_kick_facing_goal(ball, distance_from_center_of_goal, team_side):
     """Set Up kick
 
     puts the robot just behind the ball ready to shoot at the goal
     distance from center is for shooting in corners, 1 will put it in the "top" corner
     while -1 will put it in the bottom of the goal and 0 is exact center"""
 
-    target_y = distance_from_center_of_goal * Constants.goal_box_width/2
-    target_x = Constants.goal_position_opp[0]
-    return go_behind_ball_facing_target(ball, Constants.distance_behind_ball_for_kick, target_x, target_y)
+    target_y = distance_from_center_of_goal #* Constants.goal_box_width/2
+    
+    if team_side == 'home':
+        target_x = Constants.goal_position_opp[0]
+    else:
+        target_x = Constants.goal_position_home[0]
+    return go_behind_ball_facing_target(ball, Constants.distance_behind_ball_for_kick, target_x, target_y, team_side)
 
 
-def go_behind_ball_facing_target(ball, des_distance_from_ball, target_x, target_y):
+def go_behind_ball_facing_target(ball, des_distance_from_ball, target_x, target_y, team_side):
     theta = Utilities.get_angle_between_points(ball.xhat, ball.yhat, target_x, target_y)
     hypotenuse = Constants.robot_half_width + des_distance_from_ball
-    x_c = ball.xhat - hypotenuse*np.cos(theta)
-    y_c = ball.yhat - hypotenuse*np.sin(theta)
+    
+    if team_side == 'home':
+        x_c = ball.xhat - hypotenuse*np.cos(theta)
+        y_c = ball.yhat - hypotenuse*np.sin(theta)
+    else:
+        x_c = ball.xhat + hypotenuse*np.cos(theta)
+        y_c = ball.yhat + hypotenuse*np.sin(theta)
     theta = Utilities.rad_to_deg(theta)
+    print theta
     return (x_c, y_c, theta)
 
 
@@ -76,13 +85,17 @@ def attack_ball_towards_goal(me, ball, goal_y):
     return attack_ball_towards_point(me, ball, Constants.goal_position_opp[0], target_y)
 
 
-def attack_ball(me, ball):
+def attack_ball(me, ball, team_side):
     """
     Simply pushes the ball along the "vector" from robot to ball
     """
     theta = Utilities.get_angle_between_points(me.xhat, me.yhat, ball.xhat, ball.yhat)
-    x_c = ball.xhat + Constants.kick_dist*np.cos(theta)
-    y_c = ball.yhat + Constants.kick_dist*np.sin(theta)
+    if team_side == 'home':
+        x_c = ball.xhat + Constants.kick_dist*np.cos(theta)
+        y_c = ball.yhat + Constants.kick_dist*np.sin(theta)
+    else:
+        x_c = ball.xhat - Constants.kick_dist*np.cos(theta)
+        y_c = ball.yhat - Constants.kick_dist*np.sin(theta)
     theta_c = Utilities.rad_to_deg(theta)
 
     return(x_c, y_c, theta_c)
@@ -101,10 +114,14 @@ def attack_ball_towards_point(me, ball, point_x, point_y):
 # Skills mainly for "defender" position: #
 ##########################################
 
-def give_my_teammate_some_space(me, my_teammate):
+def give_my_teammate_some_space(me, my_teammate, team_side):
     theta = Utilities.get_angle_between_points(me.xhat, me.yhat, my_teammate.xhat, my_teammate.yhat)
-    x_c = my_teammate.xhat - (Constants.teammate_gap+0.05)*np.cos(theta)
-    y_c = my_teammate.yhat - (Constants.teammate_gap+0.05)*np.cos(theta)
+    if team_side == 'home':
+        x_c = my_teammate.xhat - (Constants.teammate_gap+0.05)*np.cos(theta)
+        y_c = my_teammate.yhat - (Constants.teammate_gap+0.05)*np.cos(theta)
+    else:
+        x_c = my_teammate.xhat + (Constants.teammate_gap+0.05)*np.cos(theta)
+        y_c = my_teammate.yhat + (Constants.teammate_gap+0.05)*np.cos(theta)
     theta_c = Utilities.rad_to_deg(theta)
     return (x_c, y_c, theta_c)
 
@@ -155,12 +172,12 @@ def clear_ball_from_half(me, ball):
 ##########################################
 # Skills mainly for "goalie" position:   #
 ##########################################
-def avoid_own_goal(me, ball):
+def avoid_own_goal(me, ball, team_side):
     """
     Robot will go to a point perpendicular away from the ball, so that it doesn't hit it into our goal.
     """
 
-    desired_perp_setup = Utilities.get_perpendicular_point_from_ball(me, ball)
+    desired_perp_setup = Utilities.get_perpendicular_point_from_ball(me, ball, team_side)
 
     return desired_perp_setup # THIS IS FREAKIN RIDICULOUS
 

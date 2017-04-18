@@ -21,7 +21,7 @@ Tc = .01 # sample rate of controller
 
 robot = Robot(0, 0, 0)
 runCorrector = False
-alpha = 0.1 #close to 0 for lots of noise, close to 1 for little noise
+alpha = 0.3 #close to 0 for lots of noise, close to 1 for little noise
 beta = 0.95
 meas_x = 0.0
 meas_y = 0.0
@@ -82,7 +82,7 @@ def main():
    rospy.init_node('robot_estimator', anonymous=False)
 
    # subscribe to robot state and robot state
-   rospy.Subscriber('tracker_ally1', Pose2D, _handle_robot_state)
+   rospy.Subscriber('tracker_opponent1', Pose2D, _handle_robot_state)
   
    # publish predicted robot position
    pub_predictedRobotPos = rospy.Publisher('pred_robot_state_ally1', Pose2D, queue_size=10)

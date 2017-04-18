@@ -20,14 +20,38 @@ velocities = (0, 0, 0)
 def init():
     global P_x, P_y, P_theta
 
+#####################################################
+#                   Pixel gains
+    # # Proportional gains
+    # kpx  =  0.004
+    # kpy  =  0.004
+    # kpth = -0.09
+
+    # # Derivative gains
+    # kdx  = -.003
+    # kdy  = -.001
+    # kdth = .1
+
+    # # Intergral gains
+    # kix  = 0
+    # kiy  = 0
+    # kith = -.0001
+
+    # # Instantiate x, y, and th PD controller
+    # P_x     = P(kpx,  kdx, kix, .5, 0.05)
+    # P_y     = P(kpy,  kdy, kiy, .5, 0.05)
+    # P_theta = P(kpth, kdth, kith, 360, 0.05)
+
+#####################################################
+#                   Pixel gains
     # Proportional gains
-    kpx  =  0.004
-    kpy  =  0.004
-    kpth = -0.09
+    kpx  =  0.757
+    kpy  =  0.7
+    kpth = -.09
 
     # Derivative gains
-    kdx  = -.003
-    kdy  = -.001
+    kdx  = -.7
+    kdy  = -.3
     kdth = .1
 
     # Intergral gains
@@ -36,9 +60,9 @@ def init():
     kith = -.0001
 
     # Instantiate x, y, and th PD controller
-    P_x     = P(kpx,  kdx, kix, .5, 0.05)
-    P_y     = P(kpy,  kdy, kiy, .5, 0.05)
-    P_theta = P(kpth, kdth, kith, 360, 0.05)
+    P_x     = P(kpx,  kdx, kix, .5)
+    P_y     = P(kpy,  kdy, kiy, .5)
+    P_theta = P(kpth, kdth, kith, 360)
 
 
 def set_commanded_position(x, y, theta):
@@ -133,7 +157,7 @@ def update(time_since_last_update, xhat, yhat, thetahat):
 
     return velocities
 
-def _close(a, b, tolerance=30):
+def _close(a, b, tolerance=0.1):
     return abs(a - b) <= tolerance
 
 

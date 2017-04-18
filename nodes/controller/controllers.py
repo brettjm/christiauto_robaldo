@@ -4,11 +4,10 @@ import numpy as np
 #  using a proportional controller
 class P(object):
 
-    def __init__(self, kp, kd, ki, limit, tau):
+    def __init__(self, kp, kd, ki, limit):
         super(P, self).__init__()
         self.kp = kp
         self.limit = limit
-        self.tau = tau
         self.kd = kd
         self.ki = ki
         self.xdot = 0
@@ -25,6 +24,8 @@ class P(object):
         #    error = max_error_window*np.sign(x_c - x)
         #else:
         error = x_c - x
+
+        # calculate integral gain
         self.error_total += error
 
         # calculate derivative gain

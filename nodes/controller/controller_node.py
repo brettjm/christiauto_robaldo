@@ -41,10 +41,8 @@ def main():
     global _xhat, _yhat, _thetahat, _arrived
     rospy.init_node('controller', anonymous=False)
 
-    # Sub/Pub
+    # Subscribers
     rospy.Subscriber('pred_robot_state_ally1', Pose2D, _handle_robot_state)
-
-    # Controller.set_commanded_position(200, 0, 0) 
     rospy.Subscriber('desired_position_ally1', Pose2D, _handle_desired_position)
 
     # initialize the controller and PSOC
@@ -59,12 +57,11 @@ def main():
 #        Controller.move_to_location(_xhat, _yhat, _thetahat)
 
          if _ctrl_on:
-            # Controller.set_commanded_position(400, 300, 90) 
+            # Controller.set_commanded_position(.5, 1.8, 90) 
 
 	        #2. Run positions through a P controller to get linear velocities
             (vx, vy, w) = Controller.update(_ctrl_period, _xhat, _yhat, _thetahat)
-            #print "vw, vy, and w are ", vx, vy, w
-	        
+            # print("v: %.2f, %.2f, %.2f" % (vx, vy, w))
 	        #3. Run linear velocities through M matrix to get wheel_velocities
             (v1, v2, v3) = Relationship.world_to_wheels(vx, vy, w, _thetahat)
 
@@ -84,7 +81,7 @@ def main():
             rps3 = 0.0 if limlow >= abs(rps3) else rps3
 
 	        #5. Send wheel_velocities (rev/sec) to PSOC (has a PI controller) to get PWM
-            CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
+            # CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
 
             # debug
             # print("rps: %.2f, %.2f, %.2f" % (rps1, rps2, rps3))            

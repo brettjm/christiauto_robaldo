@@ -51,7 +51,7 @@ def beginning_trick_shot_done():
 # Plays mainly for "attacker" position:  #
 ##########################################
 
-def shoot_on_goal(me, ball, distance_from_center, opponent1, opponent2):
+def shoot_on_goal(me, ball, distance_from_center, opponent1, opponent2, team_side):
     """ this sets up for a shot at a distance from the center. Distance from center should be between -1 and 1 (really like .75 and -.75).
         0 signifies straight on, 1 is top corner and -1 is bottom corner
         it also attacks the ball then actuates the kicker"""
@@ -61,7 +61,7 @@ def shoot_on_goal(me, ball, distance_from_center, opponent1, opponent2):
     global _recently_kicked, _kicker_wait_counter, _KICKER_WAIT_MAX
 
     # this is the desired setup point, the whole state machine needs it so it is
-    desired_setup_position = Skills.set_up_kick_facing_goal(ball, distance_from_center)#!!!!!!should we try and do future? So it predicts
+    desired_setup_position = Skills.set_up_kick_facing_goal(ball, distance_from_center, team_side)#!!!!!!should we try and do future? So it predicts
     # get the distance to the ball
     (x_pos, y_pos) = Utilities.get_front_of_robot(me)
     distance_from_kicker_to_ball = Utilities.get_distance_between_points(x_pos, y_pos, ball.xhat, ball.yhat)
@@ -77,22 +77,27 @@ def shoot_on_goal(me, ball, distance_from_center, opponent1, opponent2):
     ### transition states ###
     #########################
     if _shoot_state == ShootState.setup:
+        # print "setup"
         # _recently_kicked = False # Usually if it's in the setup state, we will have enough time to actuate the kicker.
         _ball_stuck_timer = _ball_stuck_timer + 1
         # if the robot is close enough to the correct angle and its in front of the ball change to the attack state
+        # print (desired_setup_position[2])
         if Utilities.robot_close_to_point(me, *desired_setup_position): 
-            if not Utilities.is_ball_behind_robot(me, ball): 
+            # print "setup"
+            if not Utilities.is_ball_behind_robot(me, ball, team_side): 
                 _shoot_state = ShootState.attack
 
     elif _shoot_state == ShootState.attack:
+        # print "attack"
         # if the ball is behind the robot, go back to set up
-        if (Utilities.is_ball_behind_robot(me, ball) or distance_from_kicker_to_ball >= Constants.robot_width):
+        if (Utilities.is_ball_behind_robot(me, ball, team_side) or distance_from_kicker_to_ball >= Constants.robot_width):
             _shoot_state = ShootState.setup
         # if the ball is close enough, go to the shoot state
         elif(distance_from_kicker_to_ball <=  Constants.kickable_distance):
             _shoot_state = ShootState.shoot
 
     elif _shoot_state == ShootState.shoot:
+        # print "shoot!"
         # Always go to the setup right after so that it only kicks once.
         _shoot_state = ShootState.setup 
 
@@ -108,22 +113,23 @@ def shoot_on_goal(me, ball, distance_from_center, opponent1, opponent2):
     if _shoot_state == ShootState.setup:
         if _ball_stuck_timer >= _BALL_STUCK_MAX:
             _ball_stuck_timer = 0
-            return Skills.attack_ball(me, ball)
+            return Skills.attack_ball(me, ball, team_side)
         else:
             return desired_setup_position
 
     # attack the ball
     elif  _shoot_state == ShootState.attack:
         # return Skills.attack_ball_towards_goal(me, ball, distance_from_center)
-        return Skills.attack_ball(me, ball)
+        return Skills.attack_ball(me, ball, team_side)
 
     elif _shoot_state == ShootState.shoot:
         if not Utilities.is_opp_too_close_to_kicker(me, opponent1, opponent2, ball):
             Skills.kick()
+            print "kick!"
         else:
             print "Opponent too close and could damage our kicker"
         # return Skills.attack_ball_towards_goal(me, ball, distance_from_center) # keep attacking the ball as you kick
-        return Skills.attack_ball(me, ball)
+        return Skills.attack_ball(me, ball, team_side)
 
     # wait for state machine to start
     else:

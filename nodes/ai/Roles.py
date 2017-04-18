@@ -82,58 +82,36 @@ def neutral_goalie(me, my_teammate, opponent1, opponent2, ball):
 # More general functions, that implement the specific strategy #
 ################################################################
 
-def attacker(me, my_teammate, opponent1, opponent2, ball, strategy, one_v_one=False):
-    global _offensive, _defensive, _neutral
+def attacker(me, my_teammate, opponent1, opponent2, ball, team_side):
     middle_of_goal = 0
 
-    goal_target = 0.6
+    goal_target = 0.0
+    goal_center = Constants.field_width_half
 
-    if Utilities.am_i_closest_teammate_to_ball(me, my_teammate, ball):
-        if Utilities.am_i_closer_to_ball_than_opponents(me, opponent1, opponent2, ball):
-            if Utilities.is_ball_behind_robot(me, ball):
-                return Skills.avoid_own_goal(me, ball)
+    if Utilities.am_i_too_close_to_teammate(me, my_teammate):
+        print "too close to teammate"
+        return Skills.give_my_teammate_some_space(me, my_teammate, team_side)
 
-            if me.ally1 or one_v_one:
-                if ball.yhat > 0: 
-                    return Plays.shoot_on_goal(me, ball, goal_target, opponent1, opponent2)
-                else: 
-                    return Plays.shoot_on_goal(me, ball, -goal_target, opponent1, opponent2)
-            else: # I am ally2
-                if strategy == _offensive:
-                    if (opponent1.xhat < me.xhat and opponent2.xhat < me.xhat):
-                        return Plays.shoot_on_goal(me, ball, middle_of_goal, opponent1, opponent2)
-                    else:
-                        # return Plays.shoot_on_goal(me, ball, middle_of_goal, opponent1, opponent2)
-                        return Plays.pass_to_teammate(me, my_teammate, ball) # passes to teammate_future_position
-                else: #Defensive
-                    if ball.yhat > 0: 
-                        return Plays.shoot_on_goal(me, ball, goal_target, opponent1, opponent2)
-                    else: 
-                        return Plays.shoot_on_goal(me, ball, -goal_target, opponent1, opponent2)
-
-        else: #Basically, we don't have possession and I should be the one to steal the ball
-            if Utilities.is_ball_behind_robot(me, ball):
-                return Skills.avoid_own_goal(me, ball)
-            else:
-                closest_opp = Utilities.get_closest_opponent_to_ball(opponent1, opponent2, ball)
-                return Plays.steal_ball_from_opponent(me, closest_opp, ball)
-    else: #My teammate is closer to the ball than me.
-        if Utilities.am_i_too_close_to_teammate(me, my_teammate):
-            return Skills.give_my_teammate_some_space(me, my_teammate)
-        elif Utilities.is_ball_behind_robot(me, ball):
-            return Skills.avoid_own_goal(me, ball)
-        else:
-            # offensive only if we are behind in points 
-            if strategy == _offensive:
-                if me.ally1:
-                    return Plays.stay_open_for_pass(me, my_teammate, ball)
-                else: # I am ally2 
-                    return Plays.stay_at_midfield_follow_ball(me, opponent1, opponent2, ball)
-            # The secondary robot will always stay at midfield
-            else:
-                return Plays.stay_at_midfield_follow_ball(me, opponent1, opponent2, ball)
-
-
+    else:
+        # if Utilities.am_i_closer_to_ball_than_opponents(me, opponent1, opponent2, ball):
+        if Utilities.is_ball_behind_robot(me, ball, team_side):
+            # print "ball behind robot"
+            return Skills.avoid_own_goal(me, ball, team_side)
+        if ball.yhat > Constants.field_width_half: 
+            # print "shooting on goal"
+            return Plays.shoot_on_goal(me, ball, goal_center + goal_target, opponent1, opponent2, team_side)
+        else: 
+        #     # print "shooting on goal"
+            return Plays.shoot_on_goal(me, ball, goal_center - goal_target, opponent1, opponent2, team_side)
+           
+        # else: # Basically, we don't have possession and I should be the one to steal the ball
+        #     if Utilities.is_ball_behind_robot(me, ball):
+        #         print "ball behind robot"
+        #         return Skills.avoid_own_goal(me, ball)
+        #     else:
+        #         print "stealing from opponent"
+        #         closest_opp = Utilities.get_closest_opponent_to_ball(opponent1, opponent2, ball)
+        #         return Plays.steal_ball_from_opponent(me, closest_opp, ball)
 
 def defender(me, my_teammate, opponent1, opponent2, ball, strategy, one_v_one=False):
     global _offensive, _defensive, _neutral

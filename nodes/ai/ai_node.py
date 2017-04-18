@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 import sys
-
+import Roles
 import rospy
+import Strategy, Constants
+import numpy as np
 from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Bool
-
-from christiauto_robaldo.msg import BallState, RobotState
 from soccerref.msg import GameState
-
-import numpy as np
-
-import Strategy, Constants
 from GameObjects import Ball, Robot
 
 _me = None
@@ -20,7 +16,7 @@ _opp2 = None
 
 _ball = None
 
-_team_side = None
+team_side = None
 
 _game_state = GameState()
 
@@ -30,16 +26,18 @@ def _handle_robot_state(msg, which_robot):
         _me.update_position(msg.x, msg.y, msg.theta)
         #_me.update_state(msg)
     elif which_robot == 'ally' and _ally is not None:
-        _ally.update_state(msg)
+        _ally.update_position(msg.x, msg.y, msg.theta)
+        # _ally.update_state(msg)
     elif which_robot == 'opp1' and _opp1 is not None:
         _opp1.update_position(msg.x, msg.y, msg.theta)
         #_opp1.update_state(msg)
     elif which_robot == 'opp2' and _opp2 is not None:
-        _opp2.update_state(msg)
+        _opp2.update_position(msg.x, msg.y, msg.theta)
+        # _opp2.update_state(msg)
 
 def _handle_ball_state(msg):
-    #_ball.update_state(msg)
     _ball.update_position(msg.x, msg.y)
+    #_ball.update_state(msg)
 
 def _handle_game_state(msg):
     global _game_state
@@ -72,9 +70,8 @@ def main():
     rospy.init_node('ai', anonymous=False)
 
     # are we home or away?
-    global _team_side
-    _team_side = sys.argv[1] 
-    Constants.team_side = _team_side
+    global team_side
+    team_side = sys.argv[1] 
 
     # Create robot objects that store that current robot's state
     _create_robots()
@@ -84,15 +81,14 @@ def main():
 
     # Subscribe to Robot States
     rospy.Subscriber('pred_robot_state_ally1', Pose2D, lambda msg: _handle_robot_state(msg, 'me'))
-    #rospy.Subscriber('ally_state', RobotState, lambda msg: _handle_robot_state(msg, 'ally'))
-    #rospy.Subscriber('opponent1_state', RobotState, lambda msg: _handle_robot_state(msg, 'opp1'))
-    # rospy.Subscriber('opponent1_state', Pose2D, lambda msg: _handle_robot_state(msg, 'opp1'))
-    #rospy.Subscriber('opponent2_state', RobotState, lambda msg: _handle_robot_state(msg, 'opp2'))
+    rospy.Subscriber('pred_robot_state_ally2', Pose2D, lambda msg: _handle_robot_state(msg, 'ally'))
+    rospy.Subscriber('tracker_opponent1',      Pose2D, lambda msg: _handle_robot_state(msg, 'opp1'))
+    rospy.Subscriber('tracker_opponent2',      Pose2D, lambda msg: _handle_robot_state(msg, 'opp2'))
 
     rospy.Subscriber('pred_ball_state_ally1', Pose2D, _handle_ball_state)
 
     # This message will tell us if we are to be playing or not right now
-    # /game_state is competition gamestate, game_state is local testing ref
+    # "/game_state" is competition gamestate, "game_state" is local testing ref
     rospy.Subscriber('game_state', GameState, _handle_game_state)
 
     pub = rospy.Publisher('desired_position_ally1', Pose2D, queue_size=10)
@@ -100,9 +96,8 @@ def main():
     rate = rospy.Rate(100) #100 Hz
     while not rospy.is_shutdown():
 
-        (x_c, y_c, theta_c) = Strategy.choose_strategy(_me, _ally, _opp1, _opp2, \
-                                     _ball, _game_state, _team_side)
-
+        (x_c, y_c, theta_c) = Roles.attacker(_me, _ally, _opp1, _opp2, _ball, team_side)
+        # print ("%0f, %0f, %0f" % (x_c, y_c, theta_c))
         # Get a message ready to send
         msg = Pose2D()           
 
@@ -110,18 +105,15 @@ def main():
             # Change team side if in second half
             if _game_state.second_half == True:
                 if sys.argv[1] == 'home':
-                    _team_side = 'away'
+                    team_side = 'away'
                 else:
-                    _team_side = 'home'
+                    team_side = 'home'
 
             # Send robot to home
             if _me.ally1:
-                msg.x = Constants.get_ally1_start_pos(_team_side)[0]
-                msg.y = Constants.get_ally1_start_pos(_team_side)[1]
-                msg.theta = Constants.get_ally1_start_pos(_team_side)[2]
-                # Convert to our coordinate system
-                msg.x = msg.x * 176 + 300
-                msg.y = msg.y * 168 + 200
+                msg.x = Constants.get_ally1_start_pos(team_side)[0]
+                msg.y = Constants.get_ally1_start_pos(team_side)[1]
+                msg.theta = Constants.get_ally1_start_pos(team_side)[2]
             elif _me.ally2:
                 msg.x = Constants.ally2_start_pos[0]
                 msg.y = Constants.ally2_start_pos[1]

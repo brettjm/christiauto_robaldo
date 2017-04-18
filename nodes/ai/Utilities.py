@@ -101,11 +101,17 @@ def has_possession():
 #################################################################
 #################################################################
 
-def is_ball_behind_robot(robot, ball):
-    if (robot.xhat > ball.xhat):
-        return True 
-    else: 
-        return False
+def is_ball_behind_robot(robot, ball, team_side):
+    if(team_side == 'home'):
+        if (robot.xhat > ball.xhat):
+            return True 
+        else: 
+            return False
+    else:
+        if (robot.xhat < ball.xhat):
+            return True 
+        else: 
+            return False
 
 def is_ball_between_home_and_robot(robot, ball):
     epsilon = Constants.robot_width/4
@@ -133,8 +139,11 @@ def is_ball_close_to_edges(ball):
 ####       FUNCTIONS FOR AVOIDING SCORING ON OURSELVES       #### 
 #################################################################
 #################################################################
-def get_perpendicular_point_from_ball(me, ball):
-    x_c = ball.xhat - 0.15
+def get_perpendicular_point_from_ball(me, ball, team_side):
+    if(team_side == 'home'):
+        x_c = ball.xhat - 0.15
+    else:
+        x_c = ball.xhat + 0.15
     direction_toggle = 1 # This will switch the side the robot will approach if the ball is too close to a wall.
     if (abs(ball.yhat) > Constants.field_width/2 - Constants.robot_width*0.60): # A little more than half width
         direction_toggle = -1
@@ -206,10 +215,10 @@ def deg_to_rad(deg):
 #################################################################
 
 def robot_close_to_point(robot, point_x, point_y, theta):
-    return close(point_x, robot.xhat, tolerance=.07) and close(point_y, robot.yhat, tolerance=.07) \
-                and close(theta, robot.thetahat, tolerance=10) # within 10cm of x and y, and 10 degree tolerance for theta
+    return close(point_x, robot.xhat, tolerance=.9) and close(point_y, robot.yhat, tolerance=.9) \
+                and close(theta, robot.thetahat, tolerance=100) # within 10cm of x and y, and 10 degree tolerance for theta
 
-def close(a, b, tolerance=0.010):
+def close(a, b, tolerance=0.1):
     """
     Usage: bool = _close([1, 2], [1.1, 2.3], tolerance=0.4) # true
     """

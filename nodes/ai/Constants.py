@@ -1,17 +1,18 @@
 # field constants. Distances measured in meters
-field_length        = 3.40 # (134 in)  ## Old field was 3.68 # (12ft) 
-field_width         = 2.38 # (93.875 in) ## Old field was 2.62 # (8.58 ft)
+field_length        = 3.17 # (125 in)  not including goals
+field_width         = 2.22 # (87.5 in) 
+field_width_half    = field_width/2
 fourth_field_length = field_length/4
 half_field          = 0
 
-robot_width         = 0.175 # (7.0 in)
+robot_width         = 0.195 # (7.0 in)
 robot_half_width    = robot_width/2
 # add constant that is the front of the robot, where we actually kick.
 
-goal_box_width      = 0.619 # (24.375 in)
+goal_box_width      = 0.63 # (24.75 in)
 goal_box_length     = 0.127 # (5.0 in)
-goal_position_home  = [-field_length/2, 0]
-goal_position_opp   = [-goal_position_home[0], 0]
+goal_position_home  = [0, field_width_half]
+goal_position_opp   = [3.17, field_width_half]
 goal_score_threshold= 0.07 # .03 IN REAL LIFE?, 0.00 IN SIMULATOR
 
 center_circle_radius= 0.25
@@ -28,9 +29,9 @@ steal_ball_dist     = robot_half_width + 0.12
 
 def get_ally1_start_pos(team_side):
    if team_side == 'home':
-      return [-0.50, 0, 0]
+      return [1.05, 1.11, 10]
    else:
-      return [0.50, 0, 0]
+      return [2.1, 1.11, 180]
 
 ally2_start_pos     = [goal_position_home[0]+goalie_radius, 0, 0]
 
