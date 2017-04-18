@@ -43,10 +43,8 @@ def main():
     rospy.init_node('controller', anonymous=False)
 
     # Sub/Pub
-    # rospy.Subscriber('pred_robot_state_ally2', Pose2D, _handle_robot_state)
     rospy.Subscriber('pred_robot_state_ally2', Pose2D, _handle_robot_state)
-
-    # rospy.Subscriber('desired_position_ally2', Pose2D, _handle_desired_position)
+    rospy.Subscriber('desired_position_ally2', Pose2D, _handle_desired_position)
 
     # initialize the controller and PSOC
     Controller.init()
@@ -60,7 +58,7 @@ def main():
          #Controller.move_to_location(_xhat, _yhat, _thetahat)
 
          if _ctrl_on:
-            Controller.set_commanded_position(3, 1.11, 90) #Just go to the middle, for testing
+            # Controller.set_commanded_position(3, 1.11, 90) #Just go to the middle, for testing
 
              #2. Run positions through a P controller to get linear velocities
             (vx, vy, w) = Controller.update(_ctrl_period, _xhat, _yhat, _thetahat)
