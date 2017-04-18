@@ -141,9 +141,9 @@ def is_ball_close_to_edges(ball):
 #################################################################
 def get_perpendicular_point_from_ball(me, ball, team_side):
     if(team_side == 'home'):
-        x_c = ball.xhat - 0.15
+        x_c = ball.xhat - 0.2
     else:
-        x_c = ball.xhat + 0.15
+        x_c = ball.xhat + 0.2
     direction_toggle = 1 # This will switch the side the robot will approach if the ball is too close to a wall.
     if (abs(ball.yhat) > Constants.field_width/2 - Constants.robot_width*0.60): # A little more than half width
         direction_toggle = -1
