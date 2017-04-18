@@ -61,23 +61,20 @@ def set_up_kick_facing_goal(ball, distance_from_center_of_goal, team_side):
         target_x = Constants.goal_position_opp[0]
     else:
         target_x = Constants.goal_position_home[0]
-    return go_behind_ball_facing_target(ball, Constants.distance_behind_ball_for_kick, target_x, target_y, team_side)
+    return go_behind_ball_facing_target(ball, Constants.distance_behind_ball_for_kick, target_x, target_y)
 
 
-def go_behind_ball_facing_target(ball, des_distance_from_ball, target_x, target_y, team_side):
+def go_behind_ball_facing_target(ball, des_distance_from_ball, target_x, target_y):
     theta = Utilities.get_angle_between_points(ball.xhat, ball.yhat, target_x, target_y)
-    hypotenuse = Constants.robot_half_width + des_distance_from_ball
+    hypotenuse = Constants.robot_width #+ des_distance_from_ball
     
-    if team_side == 'home':
-        x_c = ball.xhat - hypotenuse*np.cos(theta)
-        y_c = ball.yhat - hypotenuse*np.sin(theta)
-    else:
-        x_c = ball.xhat + hypotenuse*np.cos(theta)
-        y_c = ball.yhat + hypotenuse*np.sin(theta)
-    theta = Utilities.rad_to_deg(theta)
-    print theta
-    return (x_c, y_c, theta)
+    # This will put him hypotenuse length behind the ball
+    x_c = ball.xhat - hypotenuse*np.cos(theta)
+    y_c = ball.yhat - hypotenuse*np.sin(theta)
 
+    theta = Utilities.rad_to_deg(theta)
+    # print ("%.2f, %.2f, %.2f" % (x_c, y_c, theta))
+    return (x_c, y_c, theta)
 
 
 def attack_ball_towards_goal(me, ball, goal_y):
@@ -90,12 +87,11 @@ def attack_ball(me, ball, team_side):
     Simply pushes the ball along the "vector" from robot to ball
     """
     theta = Utilities.get_angle_between_points(me.xhat, me.yhat, ball.xhat, ball.yhat)
-    if team_side == 'home':
-        x_c = ball.xhat + Constants.kick_dist*np.cos(theta)
-        y_c = ball.yhat + Constants.kick_dist*np.sin(theta)
-    else:
-        x_c = ball.xhat - Constants.kick_dist*np.cos(theta)
-        y_c = ball.yhat - Constants.kick_dist*np.sin(theta)
+
+    # This will put him kick distance ahead of the ball
+    x_c = ball.xhat + Constants.kick_dist*np.cos(theta)
+    y_c = ball.yhat + Constants.kick_dist*np.sin(theta)
+
     theta_c = Utilities.rad_to_deg(theta)
 
     return(x_c, y_c, theta_c)

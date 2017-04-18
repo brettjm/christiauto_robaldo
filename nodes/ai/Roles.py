@@ -86,7 +86,7 @@ def attacker(me, my_teammate, opponent1, opponent2, ball, team_side):
     middle_of_goal = 0
 
     goal_target = 0.0
-    goal_center = Constants.field_width_half
+    goal_center = Constants.field_width_half # 1.11 m
 
     if Utilities.am_i_too_close_to_teammate(me, my_teammate):
         print "too close to teammate"

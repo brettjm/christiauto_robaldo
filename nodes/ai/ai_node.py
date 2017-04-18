@@ -82,7 +82,7 @@ def main():
     # Subscribe to Robot States
     rospy.Subscriber('pred_robot_state_ally1', Pose2D, lambda msg: _handle_robot_state(msg, 'me'))
     rospy.Subscriber('pred_robot_state_ally2', Pose2D, lambda msg: _handle_robot_state(msg, 'ally'))
-    rospy.Subscriber('tracker_opponent1',      Pose2D, lambda msg: _handle_robot_state(msg, 'opp1'))
+    # rospy.Subscriber('tracker_opponent1',      Pose2D, lambda msg: _handle_robot_state(msg, 'opp1'))
     rospy.Subscriber('tracker_opponent2',      Pose2D, lambda msg: _handle_robot_state(msg, 'opp2'))
 
     rospy.Subscriber('pred_ball_state_ally1', Pose2D, _handle_ball_state)

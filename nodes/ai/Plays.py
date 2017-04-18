@@ -61,7 +61,8 @@ def shoot_on_goal(me, ball, distance_from_center, opponent1, opponent2, team_sid
     global _recently_kicked, _kicker_wait_counter, _KICKER_WAIT_MAX
 
     # this is the desired setup point, the whole state machine needs it so it is
-    desired_setup_position = Skills.set_up_kick_facing_goal(ball, distance_from_center, team_side)#!!!!!!should we try and do future? So it predicts
+    desired_setup_position = Skills.set_up_kick_facing_goal(ball, distance_from_center, team_side)
+    
     # get the distance to the ball
     (x_pos, y_pos) = Utilities.get_front_of_robot(me)
     distance_from_kicker_to_ball = Utilities.get_distance_between_points(x_pos, y_pos, ball.xhat, ball.yhat)
@@ -77,7 +78,7 @@ def shoot_on_goal(me, ball, distance_from_center, opponent1, opponent2, team_sid
     ### transition states ###
     #########################
     if _shoot_state == ShootState.setup:
-        # print "setup"
+        print "setup"
         # _recently_kicked = False # Usually if it's in the setup state, we will have enough time to actuate the kicker.
         _ball_stuck_timer = _ball_stuck_timer + 1
         # if the robot is close enough to the correct angle and its in front of the ball change to the attack state
@@ -88,7 +89,7 @@ def shoot_on_goal(me, ball, distance_from_center, opponent1, opponent2, team_sid
                 _shoot_state = ShootState.attack
 
     elif _shoot_state == ShootState.attack:
-        # print "attack"
+        print "attack"
         # if the ball is behind the robot, go back to set up
         if (Utilities.is_ball_behind_robot(me, ball, team_side) or distance_from_kicker_to_ball >= Constants.robot_width):
             _shoot_state = ShootState.setup
@@ -97,7 +98,7 @@ def shoot_on_goal(me, ball, distance_from_center, opponent1, opponent2, team_sid
             _shoot_state = ShootState.shoot
 
     elif _shoot_state == ShootState.shoot:
-        # print "shoot!"
+        print "shoot!"
         # Always go to the setup right after so that it only kicks once.
         _shoot_state = ShootState.setup 
 
