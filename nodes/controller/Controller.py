@@ -60,8 +60,8 @@ def init():
     kith = -.0001
 
     # Instantiate x, y, and th PD controller
-    P_x     = P(kpx,  kdx, kix, .5)
-    P_y     = P(kpy,  kdy, kiy, .5)
+    P_x     = P(kpx,  kdx, kix, .7)
+    P_y     = P(kpy,  kdy, kiy, .7)
     P_theta = P(kpth, kdth, kith, 360)
 
 

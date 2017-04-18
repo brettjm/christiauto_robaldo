@@ -81,7 +81,7 @@ def main():
             rps3 = 0.0 if limlow >= abs(rps3) else rps3
 
 	        #5. Send wheel_velocities (rev/sec) to PSOC (has a PI controller) to get PWM
-            # CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
+            CommandPSOC.setWheelVelocities(rps1, rps2, rps3)
 
             # debug
             # print("rps: %.2f, %.2f, %.2f" % (rps1, rps2, rps3))            
