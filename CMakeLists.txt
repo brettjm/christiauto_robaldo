@@ -62,13 +62,13 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
+#add_message_files(
 #   FILES
-#   BallState.msg
-#   RobotState.msg
-#   PIDInfo.msg
 #   GameState.msg
 # )
+
+# Declare ROS messages
+add_message_files(DIRECTORY msg FILES GameState.msg)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -120,10 +120,10 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES christiauto_robaldo
- CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime std_srvs soccerref
-#  DEPENDS system_lib
+  #INCLUDE_DIRS include
+  #LIBRARIES christiauto_robaldo
+  #CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime std_srvs soccerref
+  #DEPENDS system_lib
 )
 
 ###########
@@ -158,9 +158,9 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 
 
-add_executable( Detection src/Detection.cpp )
-target_link_libraries( Detection ${OpenCV_LIBS} )
-target_link_libraries( Detection ${catkin_LIBRARIES})
+add_executable( QuickDirtyAI src/QuickDirtyAI.cpp )
+target_link_libraries( QuickDirtyAI ${OpenCV_LIBS} )
+target_link_libraries( QuickDirtyAI ${catkin_LIBRARIES})
 
 add_executable( contours src/contours.cpp )
 target_link_libraries( contours ${OpenCV_LIBS} )

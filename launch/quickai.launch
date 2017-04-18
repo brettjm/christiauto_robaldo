@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<launch>
+   <!-- declare arg to be passed in -->
+   <arg name="home" default="true" />
+
+   <group ns="christiauto_robaldo_home" if="$(arg home)">
+
+      <node name="QuickDirtyAI" pkg="christiauto_robaldo" type="QuickDirtyAI" output="screen">
+         <remap from="game_state" to="/game_state" />
+      </node>
+
+      <node name="robot_estimator2" pkg="christiauto_robaldo" type="robot_estimator_node.py" output="screen">
+      </node>
+
+   </group>
+
+   <group ns="christiauto_robaldo_away" unless="$(arg home)">
+
+      <node name="QuickDirtyAI" pkg="christiauto_robaldo" type="QuickDirtyAI" output="screen">
+         <remap from="game_state" to="/game_state" />
+      </node>
+
+      <node name="robot_estimator2" pkg="christiauto_robaldo" type="robot_estimator_node.py" output="screen">
+      </node>
+
+   </group>
+</launch>
+

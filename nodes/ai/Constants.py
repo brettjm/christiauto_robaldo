@@ -12,6 +12,7 @@ goal_box_width      = 0.619 # (24.375 in)
 goal_box_length     = 0.127 # (5.0 in)
 goal_position_home  = [-field_length/2, 0]
 goal_position_opp   = [-goal_position_home[0], 0]
+
 goal_score_threshold= 0.07 # .03 IN REAL LIFE?, 0.00 IN SIMULATOR
 
 center_circle_radius= 0.25

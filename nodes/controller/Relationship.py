@@ -20,19 +20,19 @@ class Vector(object):
 def init():
     global M
 
-    R = .035    #radius of the wheels (in m)
+    R = 0.025 #.035    #radius of the wheels (in m)
 
-    rx1 = 0.067
-    ry1 = 0.038
-    rx2 = -0.067
-    ry2 = 0.038
+    rx1 = 0.067  #0.067
+    ry1 = 0.036  #0.038
+    rx2 = -0.067 #-0.067
+    ry2 = 0.036  #0.038
     rx3 = 0
-    ry3 = -0.038
+    ry3 = -0.077 #-0.038
     
-    sx1 = -0.567
-    sy1 = 0.824
-    sx2 = -0.567
-    sy2 = -0.824
+    sx1 = -0.468 #-0.567
+    sy1 = 0.884  #0.824
+    sx2 = -0.543 #-0.567
+    sy2 = -0.840 #-0.824
     sx3 = 1
     sy3 = 0
 
@@ -40,27 +40,6 @@ def init():
                       [sx2, sy2, (sy2*rx2 - sx2*ry2)], 
                       [sx3, sy3, (sy3*rx3 - sx3*ry3)]])
     M = (1.0/R)*Msub
-
-
-    # R = .0282977488817 # radius of wheel
-    # r = .078 # radius from robot center to each wheel
-
-    # # r_k is a vector that points from center of robot to center of each wheel
-    # r1 = Vector(r,theta=np.pi/3)
-    # r2 = Vector(r,theta=np.pi)
-    # r3 = Vector(r,theta=5*np.pi/3)
-
-    # # s_k is a unit vector that points in the direction of spin
-    # s1 = Vector(1,theta=(r1.theta + np.pi/2))
-    # s2 = Vector(1,theta=(r2.theta + np.pi/2))
-    # s3 = Vector(1,theta=(r3.theta + np.pi/2))
-
-    # # Create the M matrix that relates body and world coordinates
-    # mSub = np.matrix([ [s1.x, s1.y, (s1.y*r1.x - s1.x*r1.y)],
-    #                    [s2.x, s2.y, (s2.y*r2.x - s2.x*r2.y)],
-    #                    [s3.x, s3.y, (s3.y*r3.x - s3.x*r3.y)]
-    #                  ])
-    # M = (1.0/R)*mSub
 
 def world_to_wheels(vx, vy, w, th):
     global M  

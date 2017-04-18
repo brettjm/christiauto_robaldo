@@ -4,16 +4,17 @@ import numpy as np
 #  using a proportional controller
 class P(object):
 
-    def __init__(self, kp, kd, limit, tau):
+    def __init__(self, kp, kd, ki, limit):
         super(P, self).__init__()
         self.kp = kp
         self.limit = limit
-        self.tau = tau
         self.kd = kd
+        self.ki = ki
         self.xdot = 0
         self.error_d1 = 0
         self.x_d1 = 0
         self.sigma = .05
+        self.error_total = 0
 
     def update(self, x_c, x, Tx, max_error_window=0.425):
 
@@ -24,20 +25,21 @@ class P(object):
         #else:
         error = x_c - x
 
-        # calculate derivative gain
-        self.xdot = (2*self.sigma-Tx)/(2*self.sigma+Tx)*self.xdot 
-        + 2/(2*self.sigma+Tx)*(x-self.x_d1);
+        # calculate integral gain
+        self.error_total += error
 
+        # calculate derivative gain
+        self.xdot = (error - self.error_d1) / Tx
+        
         # update delayed variables for next time
-        # self.error_d1 = error
+        self.error_d1 = error
         self.x_d1 = x       
 
         # compute the P control signal
-        u_unsat = self.kp*error - self.kd*self.xdot
+        u_unsat = self.kp*error - self.kd*self.xdot + self.ki*self.error_total
         u = self._sat(u_unsat)      
-
+        
         return u
-
 
     def _sat(self, val):
         out = 0
