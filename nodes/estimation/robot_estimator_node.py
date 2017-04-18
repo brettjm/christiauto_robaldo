@@ -82,7 +82,7 @@ def main():
    rospy.init_node('robot_estimator', anonymous=False)
 
    # subscribe to robot state and robot state
-   rospy.Subscriber('tracker_opponent1', Pose2D, _handle_robot_state)
+   rospy.Subscriber('tracker_ally1', Pose2D, _handle_robot_state)
   
    # publish predicted robot position
    pub_predictedRobotPos = rospy.Publisher('pred_robot_state_ally1', Pose2D, queue_size=10)
